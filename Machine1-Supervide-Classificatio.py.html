@@ -1,0 +1,402 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import numpy as np
+import pandas as pd
+import seaborn as sb
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn import preprocessing
+
+get_ipython().run_line_magic('matplotlib', 'inline')
+
+
+# In[2]:
+
+
+df = pd.read_csv("diabetes.csv")
+
+
+# In[3]:
+
+
+df.head()# To show the first 5 elements
+
+
+# In[24]:
+
+
+columns = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+labels = df['Outcome'].values
+features = df[list(columns)].values
+
+
+# In[ ]:
+
+
+#columen:Add all the name of columns
+#Lables: To spreat the outcome of columens to show its value(0 and 1)
+#Features: To take just the values of columen without their name
+
+
+# In[25]:
+
+
+labels
+# To see the value of outcome
+
+
+# In[26]:
+
+
+features
+# To see the value of columen
+
+
+# In[32]:
+
+
+from sklearn.ensemble import RandomForestClassifier #Used RandomForestClassifier to classifier
+from sklearn.model_selection import train_test_split # This method to do train and test
+
+
+# In[33]:
+
+
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.30)
+# 0.30 fot test
+#0.70 for train
+#x=feature
+#y= labels
+
+
+# In[34]:
+
+
+clf = RandomForestClassifier(n_estimators=1)
+clf = clf.fit(X_train, y_train)
+# n_estimators=1 (improve the performance)
+
+
+# In[36]:
+
+
+accuracy = clf.score(X_train, y_train)
+print (accuracy*100)
+# Accurace for train      الدقة للتدريب
+
+
+# In[38]:
+
+
+accuracy = clf.score(X_test, y_test)
+print (accuracy*100)
+# # Accurace for test      الدقة للاختبار
+
+
+# In[41]:
+
+
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+
+ypredict = clf.predict(X_train)
+print ('\nTraining classification report\n', classification_report(y_train, ypredict))
+
+
+# In[42]:
+
+
+print ("\n Confusion matrix of training \n", confusion_matrix(y_train, ypredict))
+
+
+# In[43]:
+
+
+ypredict = clf.predict(X_test)
+print ('\nTraining classification report\n', classification_report(y_test, ypredict))
+print ("\n Confusion matrix of training \n", confusion_matrix(y_test, ypredict))
+
+
+
+# 0 is class1 or positive
+# 1 is class1 or nigative
+# precision is accuracy for classes 0 and 1
+# recall is like sensitivity for classifier
+
+
+# In[45]:
+
+
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+
+ypredict = clf.predict(X_train)
+print ('\nTraining classification report\n', classification_report(y_train, ypredict))
+
+
+# To evaluation the classifer by report for trainang
+# classification_report is function
+# 573 simles that are used in Training 
+
+
+# In[46]:
+
+
+print ("\n Confusion matrix of training \n", confusion_matrix(y_train, ypredict))
+
+# To evaluation the classifer by matrix for training
+# 316 and 153 are correect simple
+# 32 and 36 are incorrect
+
+
+# In[49]:
+
+
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+
+ypredict = clf.predict(X_test)
+print ('\nTest classification report\n', classification_report(y_test, ypredict))
+
+
+# To evaluation the classifer by report for test
+# classification_report is function
+# 573 simles that are used in Test
+
+# The accuarse for class 0 is bigger than class 1, so there is precision    فيه انحياز
+
+
+# In[50]:
+
+
+print ("\n Confusion matrix of testing \n", confusion_matrix(y_test, ypredict))
+
+# To evaluation the classifer by matrix for testing
+# 122 and 30 are correect simple
+# 43 and 361 are incorrect
+
+
+# # To check for data to improve the classifer
+# 
+# 1- Use the def.info(): to desciver if ther is any miss data
+# 2- Use the Sebron library to make distrribution for data
+
+# In[52]:
+
+
+df.info()
+
+# We do not have any null data.
+#Also, it shows the type data
+
+
+# In[53]:
+
+
+sb.countplot(x='Outcome',data=df, palette='hls')
+
+# This diagram shows the class 0 clears the pupol who do not have any diabetes(500), but class 1 shows the pupol who have diabetes(200)
+# X = outcome(0,1)
+# df = data frame
+#hls = the type of graph
+
+
+# In[55]:
+
+
+sb.countplot(x='Age',data=df, palette='hls')
+# shows for Age
+
+
+# In[56]:
+
+
+sb.heatmap(df.corr())
+# shows for the properties which depend on other properties
+
+
+# #  To check for data to improve the classifer By standard Scaler
+# 
+# 1-Use the sci -kit learn <3 (It is a library)
+
+# In[60]:
+
+
+columns = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+labels = df['Outcome'].values
+features = df[list(columns)].values
+
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.30)
+
+clf = RandomForestClassifier(n_estimators=1)
+clf = clf.fit(X_train, y_train)
+
+accuracy = clf.score(X_train, y_train)
+print (' اداء النموذج في عينة التدريب بدقة ', accuracy*100)
+
+accuracy = clf.score(X_test, y_test)
+print (' اداء النموذج في عينة الفحص بدقة ', accuracy*100)
+
+ypredict = clf.predict(X_train)
+print ('\n Training classification report\n', classification_report(y_train, ypredict))
+print ("\n Confusion matrix of training \n", confusion_matrix(y_train, ypredict))
+
+ypredict = clf.predict(X_test)
+print ('\n Testing classification report\n', classification_report(y_test, ypredict))
+print ("\n Confusion matrix of Testing \n", confusion_matrix(y_test, ypredict))
+
+
+# #  standard scaler
+# 
+
+# In[62]:
+
+
+#scaling
+scaler = StandardScaler()
+
+# Fit only on training data
+scaler.fit(X_train)
+X_train = scaler.transform(X_train)
+# apply same transformation to test data
+X_test = scaler.transform(X_test)
+
+
+# In[65]:
+
+
+clf = RandomForestClassifier(n_estimators=1)
+clf = clf.fit(X_train, y_train)
+
+accuracy = clf.score(X_train, y_train)
+print (' اداء النموذج في عينة التدريب بدقة ', accuracy*100)
+
+accuracy = clf.score(X_test, y_test)
+print (' اداء النموذج في عينة الفحص بدقة ', accuracy*100)
+
+ypredict = clf.predict(X_train)
+print ('\n Training classification report\n', classification_report(y_train, ypredict))
+print ("\n Confusion matrix of training \n", confusion_matrix(y_train, ypredict))
+
+ypredict = clf.predict(X_test)
+print ('\n Testing classification report\n', classification_report(y_test, ypredict))
+print ("\n Confusion matrix of Testing \n", confusion_matrix(y_test, ypredict))
+
+
+# # In the standard scaler: there is huge different between training(87.52327746741155) and testing(70.995670995671) simples, we should anotyher way or method to fix this difference.
+
+# # To check for data to improve the classifer By min-max scaler
+
+# In[66]:
+
+
+columns = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+labels = df['Outcome'].values
+features = df[list(columns)].values
+
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.30)
+
+scaler = preprocessing.MinMaxScaler()
+
+scaler.fit(X_train)
+X_train = scaler.transform(X_train)
+# apply same transformation to test data
+X_test = scaler.transform(X_test)
+
+clf = RandomForestClassifier(n_estimators=1)
+clf = clf.fit(X_train, y_train)
+
+accuracy = clf.score(X_train, y_train)
+print (' اداء النموذج في عينة التدريب بدقة ', accuracy*100)
+
+accuracy = clf.score(X_test, y_test)
+print (' اداء النموذج في عينة الفحص بدقة ', accuracy*100)
+
+ypredict = clf.predict(X_train)
+print ('\n Training classification report\n', classification_report(y_train, ypredict))
+print ("\n Confusion matrix of training \n", confusion_matrix(y_train, ypredict))
+
+ypredict = clf.predict(X_test)
+print ('\n Testing classification report\n', classification_report(y_test, ypredict))
+print ("\n Confusion matrix of Testing \n", confusion_matrix(y_test, ypredict))
+
+
+# #  Also, In min-max scaler: there is huge different between training(87.89571694599626) and testing(68.83116883116884) simples, we should find anotyher algorithem or method to fix this difference.
+
+# # Used RandomForest
+
+# In[68]:
+
+
+columns = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+labels = df['Outcome'].values
+features = df[list(columns)].values
+
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.30)
+
+clf = RandomForestClassifier(n_estimators=1)
+clf = clf.fit(X_train, y_train)
+
+accuracy = clf.score(X_train, y_train)
+print (' اداء النموذج في عينة التدريب بدقة ', accuracy*100)
+
+accuracy = clf.score(X_test, y_test)
+print (' اداء النموذج في عينة الفحص بدقة ', accuracy*100)
+
+ypredict = clf.predict(X_train)
+print ('\n Training classification report\n', classification_report(y_train, ypredict))
+print ("\n Confusion matrix of training \n", confusion_matrix(y_train, ypredict))
+
+ypredict = clf.predict(X_test)
+print ('\n Testing classification report\n', classification_report(y_test, ypredict))
+print ("\n Confusion matrix of Testing \n", confusion_matrix(y_test, ypredict))
+
+
+# In[ ]:
+
+
+# The trining is rised(88.4543761638733), but the testing is bad rate
+
+
+# # Let's chinge the number of n_estimators=1 to n_estimators=6
+
+# In[69]:
+
+
+columns = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+labels = df['Outcome'].values
+features = df[list(columns)].values
+
+X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.30)
+
+clf = RandomForestClassifier(n_estimators=6)
+clf = clf.fit(X_train, y_train)
+
+accuracy = clf.score(X_train, y_train)
+print (' اداء النموذج في عينة التدريب بدقة ', accuracy*100)
+
+accuracy = clf.score(X_test, y_test)
+print (' اداء النموذج في عينة الفحص بدقة ', accuracy*100)
+
+ypredict = clf.predict(X_train)
+print ('\n Training classification report\n', classification_report(y_train, ypredict))
+print ("\n Confusion matrix of training \n", confusion_matrix(y_train, ypredict))
+
+ypredict = clf.predict(X_test)
+print ('\n Testing classification report\n', classification_report(y_test, ypredict))
+print ("\n Confusion matrix of Testing \n", confusion_matrix(y_test, ypredict))
+
+
+# In[ ]:
+
+
+# The trining is rised(96.2756052141527), and the testing is rised(74.02597402597402).
+#Finally, we improved classifier
+
